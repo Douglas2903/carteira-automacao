@@ -30,6 +30,8 @@ Os ativos monitorados são:
 - **Retry no erro 503.** Se a API responder 503, o código tenta de novo até 3 vezes, esperando 30 segundos entre as tentativas. Qualquer outro erro interrompe a execução de propósito, para gerar a notificação de falha por e-mail.
 - **A chave da API fica nas propriedades do script**, nunca no código.
 - **Defesa contra prompt injection e regras no prompt.** Os dados vão entre tags e são tratados só como dados. A IA é proibida de recomendar compra ou venda, de fazer previsões e de explicar por que um preço subiu ou caiu, porque não tem acesso às notícias.
+- **Os dados dizem o papel de cada ativo.** Nos dados enviados à IA, a BOVA11 aparece como "Mercado" e o dólar como "Dólar", em vez de "Acompanhando". Antes, o prompt tinha uma exceção ("Acompanhando, menos BOVA11 e dólar"), e a IA a ignorou em duas de três execuções. Quando o prompt precisa de exceções, o problema costuma estar nos dados.
+- **O formato do resumo é um molde para copiar**, com colchetes onde entram os dados, em vez de uma descrição de cada seção. Descrevendo, o modelo às vezes confundia o título da seção com a instrução e deixava o título de fora.
 - **O aviso "não é recomendação de investimento" é escrito pelo código**, não pela IA, porque é um texto fixo.
 - **O histórico de 28/09 a 09/11 foi preenchido manualmente, uma única vez.** O Google bloqueia o acesso aos dados históricos do `GOOGLEFINANCE` pelo Apps Script.
 - **Base 100** (preço do dia ÷ preço de 28/09 × 100). Permite comparar no mesmo gráfico ativos com preços muito diferentes, como a BOVA11 (perto de R\$ 170) e o dólar (perto de R\$ 5,50).
@@ -47,13 +49,12 @@ Os ativos monitorados são:
 - O registro não detecta feriados da B3.
 - A média da carteira é simples, sem pesos, porque a planilha não guarda os valores investidos, por privacidade.
 - A IA não tem memória entre as semanas, e o termo explicado no resumo se repetiu ("Ticker" em quatro execuções seguidas).
-- A IA às vezes ignora uma regra de formato do resumo, mas os números sempre saíram certos, porque vêm calculados pelo código.
+- A IA não é determinística: mesmo com o molde, nada garante que ela siga o formato em toda execução. Os números sempre saíram certos, porque vêm calculados pelo código.
 - O código supõe que o Histórico está em ordem de data.
 
 ## Próximos passos
 
 - O código escolher o termo da semana, e a IA só explicar.
-- Marcar a BOVA11 e o dólar com tipos próprios nos dados, para tirar exceções do prompt.
 - Um resumo diário com um agente de IA no n8n.
 
 ## Tecnologias
